@@ -13,8 +13,8 @@ class Enemy(object):
         self.walkCount = 0
         self.vel = 7
         self.path = [self.x, self.end]
-        self.walkRight = [pygame.image.load('images\\cassie\\S1.png')] # Add animations
-        self.walkLeft = [pygame.image.load('images\\cassie\\S1.png')] # Add animations
+        self.walkRight = [pygame.image.load('images\\pallene\\S1.png')] # Add animations
+        self.walkLeft = [pygame.image.load('images\\pallene\\S1.png')] # Add animations
 
     def draw(self, win):
         self.move()

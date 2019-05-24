@@ -1,4 +1,4 @@
-from player import Player
+from player import Cassie
 from enemies import Enemy
 from projectiles import SampleProjectile
 import pygame
@@ -22,7 +22,7 @@ def redrawGameWindow():
         bullet.draw(win)
     pygame.display.update()
 
-cassie = Player(250, 880, 250, 200)
+cassie = Cassie(250, 880, 250, 200)
 enemy = Enemy(1100, 880, 250, 200, 1920)
 bullets = []
 run = True

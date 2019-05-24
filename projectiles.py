@@ -4,7 +4,7 @@ class Projectile:
     def __init__(self):
         raise NotImplementedError('Do not create raw Projectile!')
 
-class SmallBullet:
+class SmallBullet(Projectile):
     def __init__(self, x, y, direction):
         self.x = x
         self.y = y
@@ -12,7 +12,14 @@ class SmallBullet:
         self.vel = 30
         self.dmg = 10
 
-class SampleProjectile:
+class TwoHandPlazma(Projectile):
+    def __init__(self, x, y, direction)
+        self.x = x
+        self.y = y
+        self.direction = direction
+        self.dmg = 2
+
+class SampleProjectile(Projectile):
     def __init__(self, x, y, radius, color, facing):
         self.x = x
         self.y = y
