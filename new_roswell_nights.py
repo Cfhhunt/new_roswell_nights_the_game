@@ -1,3 +1,6 @@
+from player import Player
+from enemies import Enemy
+from projectiles import SampleProjectile
 import pygame
 pygame.init()
 
@@ -7,70 +10,21 @@ screenHeight = 1080
 win = pygame.display.set_mode((screenWidth, screenHeight), pygame.FULLSCREEN)
 pygame.display.set_caption('New Roswell Nights')
 
-walkRight = [pygame.image.load('images\\R1.png'), pygame.image.load('images\\R2.png'), pygame.image.load('images\\R3.png'), pygame.image.load('images\\R4.png'), pygame.image.load('images\\R5.png'), pygame.image.load('images\\R6.png'), pygame.image.load('images\\R7.png'), pygame.image.load('images\\R8.png')]
-walkLeft = [pygame.image.load('images\\L1.png'), pygame.image.load('images\\L2.png'), pygame.image.load('images\\L3.png'), pygame.image.load('images\\L4.png'), pygame.image.load('images\\L5.png'), pygame.image.load('images\\L6.png'), pygame.image.load('images\\L7.png'), pygame.image.load('images\\L8.png')]
-jumpRight = [pygame.image.load('images\\JR1.png'), pygame.image.load('images\\JR2.png')]
-jumpLeft = [pygame.image.load('images\\JL1.png'), pygame.image.load('images\\JL2.png')]
 bg = pygame.image.load('images\\background.png')
-cassStanding = pygame.image.load('images\\S1.png')
 
 clock = pygame.time.Clock()
-
-class player(object):
-    def __init__(self, x, y, width, height):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-        self.vel = 10
-        self.isJump = False
-        self.jumpCount = 10
-        self.left = False
-        self.right = False
-        self.walkCount = 0
-        self.standing = True
-
-    def draw(self, win):
-        if self.walkCount + 1 >= 24:
-            self.walkCount = 0
-        if self.isJump and self.left:
-            if self.jumpCount <= 0:
-                win.blit(jumpLeft[0], (self.x, self.y))
-            else:
-                win.blit(jumpLeft[1], (self.x, self.y))
-        elif self.isJump:
-            if self.jumpCount <= 0:
-                win.blit(jumpRight[0], (self.x, self.y))
-            else:
-                win.blit(jumpRight[1], (self.x, self.y))
-        elif self.left:
-            win.blit(walkLeft[self.walkCount//3], (self.x, self.y))
-            self.walkCount += 1
-        elif self.right:
-            win.blit(walkRight[self.walkCount//3], (self.x, self.y))
-            self.walkCount += 1
-        else:
-            win.blit(cassStanding, (self.x, self.y))
-
-class projectile(object):
-    def __init__(self, x, y, radius, color, facing):
-        self.x = x
-        self.y = y
-        self.radius = radius
-        self.color = color
-        self.facing = facing
-        self.vel = 20 * facing
-
-    def draw(win):
-        pygame.draw.circle(win, self.color, (self.x, self.y), self.radius)
-
 
 def redrawGameWindow():
     win.blit(bg, (0, 0))
     cassie.draw(win)
+    enemy.draw(win)
+    for bullet in bullets:
+        bullet.draw(win)
     pygame.display.update()
 
-cassie = player(250, 880, 250, 200)
+cassie = Player(250, 880, 250, 200)
+enemy = Enemy(1100, 880, 250, 200, 1920)
+bullets = []
 run = True
 while run:
     clock.tick(60)
@@ -79,7 +33,22 @@ while run:
         if event.type == pygame.QUIT:
             run = False
 
+    for bullet in bullets:
+        if bullet.x < screenWidth and bullet.x > 0:
+            bullet.x += bullet.vel
+        else:
+            bullets.pop(bullets.index(bullet))
+
+
     keys = pygame.key.get_pressed()
+
+    if keys[pygame.K_f]:
+        if cassie.left:
+            facing = -1
+        else:
+            facing = 1
+        if len(bullets) < 5:
+            bullets.append(SampleProjectile(round(cassie.x + cassie.width //2), round(cassie.y + cassie.height//2), 6, (0,220,255), facing))
 
     if keys[pygame.K_q]:
         pygame.quit()
