@@ -1,8 +1,13 @@
-# 3 weapon types to start; one-handed, two-handed, and melee
+import pygame
+import ammo
 
 class Weapon:
     def __init__(self):
         raise NotImplementedError('Do not create raw Weapon!')
 
-class ColtSaa(Weapon):
+class PlazmaGun(Weapon):
     def __init__(self):
+        self.ammo = ammo.TwoHandPlazma
+        self.maxAmmo = 1000
+        self.ammoLeft = 1000
+        self.duration = 60 # Duration in frames

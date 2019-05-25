@@ -1,75 +1,74 @@
 from player import Cassie
-from enemies import Enemy
-from projectiles import SampleProjectile
+import weapons
+import ammo
 import pygame
+import enemies
 pygame.init()
 
+# Display and world info
 screenWidth = 1920
 screenHeight = 1080
-
 win = pygame.display.set_mode((screenWidth, screenHeight), pygame.FULLSCREEN)
 pygame.display.set_caption('New Roswell Nights')
-
 bg = pygame.image.load('images\\background.png')
-
 clock = pygame.time.Clock()
 
 def redrawGameWindow():
-    win.blit(bg, (0, 0))
+    win.blit(bg, (0, 0)) #this will eventually be passed to world.draw()
     cassie.draw(win)
-    enemy.draw(win)
-    for bullet in bullets:
-        bullet.draw(win)
+    drawProjectiles()
+    drawBadGuys()
     pygame.display.update()
 
-cassie = Cassie(250, 880, 250, 200)
-enemy = Enemy(1100, 880, 250, 200, 1920)
-bullets = []
-run = True
-while run:
+def drawProjectiles():
+    for projectile in projectiles:
+        projectile.updatePos(cassie.x, cassie.y, cassie.direction)
+        projectile.draw(win)
+
+def drawBadGuys():
+    for badGuy in badGuys:
+        badGuy.draw(win)
+
+cassie = Cassie(250, 880)
+badGuys = []
+badGuys.append(enemies.Enemy(1100, 880, 250, 200, 1920))
+projectiles = []
+while not cassie.ded:
     clock.tick(60)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            run = False
+            pygame.quit()
 
-    for bullet in bullets:
-        if bullet.x < screenWidth and bullet.x > 0:
-            bullet.x += bullet.vel
+    for projectile in projectiles: # move or remove projectiles
+        if projectile.x < screenWidth and projectile.x > 0:
+            projectile.x += projectile.vel * projectile.direction
         else:
-            bullets.pop(bullets.index(bullet))
-
+            projectiles.pop(projectiles.index(projectile))
 
     keys = pygame.key.get_pressed()
 
-    if keys[pygame.K_f]:
-        if cassie.left:
-            facing = -1
-        else:
-            facing = 1
-        if len(bullets) < 5:
-            bullets.append(SampleProjectile(round(cassie.x + cassie.width //2), round(cassie.y + cassie.height//2), 6, (0,220,255), facing))
-
-    if keys[pygame.K_q]:
+    if keys[pygame.K_ESCAPE]:
         pygame.quit()
+
+    if keys[pygame.K_f]:
+        if len(projectiles) < 5:
+            projectiles.append(cassie.weapon.ammo(round(cassie.x + cassie.width //2), round(cassie.y + cassie.height//2), cassie.direction))
 
     if keys[pygame.K_LEFT] and cassie.x > 0:
         cassie.x -= cassie.vel
-        cassie.left = True
-        cassie.right = False
+        cassie.direction = -1
+        cassie.moving = True
     elif keys[pygame.K_RIGHT] and cassie.x < screenWidth - cassie.width:
         cassie.x += cassie.vel
-        cassie.left = False
-        cassie.right = True
+        cassie.direction = 1
+        cassie.moving = True
     else:
-        cassie.left = False
-        cassie.right = False
-        cassie.walkCount = 0
-    if not(cassie.isJump):
+        cassie.moving = False
+        cassie.walkcount = 0
+    if not cassie.jumping:
         if keys[pygame.K_SPACE]:
-            cassie.isJump = True
-            cassie.right = True
-            cassie.left = False
+            cassie.jumping = True
             cassie.walkCount = 0
     else:
         if cassie.jumpCount >= -10:
@@ -79,7 +78,7 @@ while run:
             cassie.y -= (cassie.jumpCount ** 2) * 0.5 * neg
             cassie.jumpCount -= 1
         else:
-            cassie.isJump = False
+            cassie.jumping = False
             cassie.jumpCount = 10
     redrawGameWindow()
 
