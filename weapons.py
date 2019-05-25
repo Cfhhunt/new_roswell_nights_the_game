@@ -11,3 +11,6 @@ class PlazmaGun(Weapon):
         self.maxAmmo = 1000
         self.ammoLeft = 1000
         self.duration = 60 # Duration in frames
+
+    def fire(self, x, y, direction):
+        return self.ammo(x, y, direction)

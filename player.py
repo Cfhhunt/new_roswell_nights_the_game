@@ -26,6 +26,9 @@ class Player:
         else:
             win.blit(self.walkRight[self.walkCount//3], (self.x, self.y))
             self.walkCount += 1
+        self.hitBox = (self.x + 50, self.y, 100, 100)
+        if self.hp <= 0:
+            self.ded = True
 
 class Cassie(Player):
     def __init__(self, x, y):
@@ -43,12 +46,19 @@ class Cassie(Player):
         self.attacking = False
         self.stunned = False
         self.ded = False
+
+        self.hp = 100
+        self.maxHp = 100
+        self.hitBox = (self.x + 50, self.y, 100, 100)
+        self.weapon = weapons.PlazmaGun()
+
+        # Sprites
         self.walkRight = [pygame.image.load('images\\cassie\\R1.png'), pygame.image.load('images\\cassie\\R2.png'), pygame.image.load('images\\cassie\\R3.png'), pygame.image.load('images\\cassie\\R4.png'), pygame.image.load('images\\cassie\\R5.png'), pygame.image.load('images\\cassie\\R6.png'), pygame.image.load('images\\cassie\\R7.png'), pygame.image.load('images\\cassie\\R8.png')]
         self.walkLeft = [pygame.image.load('images\\cassie\\L1.png'), pygame.image.load('images\\cassie\\L2.png'), pygame.image.load('images\\cassie\\L3.png'), pygame.image.load('images\\cassie\\L4.png'), pygame.image.load('images\\cassie\\L5.png'), pygame.image.load('images\\cassie\\L6.png'), pygame.image.load('images\\cassie\\L7.png'), pygame.image.load('images\\cassie\\L8.png')]
         self.jumpRight = [pygame.image.load('images\\cassie\\JR1.png'), pygame.image.load('images\\cassie\\JR2.png')]
         self.jumpLeft = [pygame.image.load('images\\cassie\\JL1.png'), pygame.image.load('images\\cassie\\JL2.png')]
         self.standing = pygame.image.load('images\\cassie\\S1.png')
-        self.weapon = weapons.PlazmaGun()
+
 
 class Shespoz(Player):
     def __init__(self, x, y):

@@ -21,13 +21,19 @@ def redrawGameWindow():
     pygame.display.update()
 
 def drawProjectiles():
-    for projectile in projectiles:
+    for projectile in projectiles: # move or remove projectiles
+        if projectile.x < screenWidth and projectile.x > 0:
+            projectile.x += projectile.vel * projectile.direction
+        else:
+            projectiles.pop(projectiles.index(projectile))
         projectile.updatePos(cassie.x, cassie.y, cassie.direction)
         projectile.draw(win)
 
 def drawBadGuys():
     for badGuy in badGuys:
         badGuy.draw(win)
+        if badGuy.ded:
+            badGuys.pop(badGuys.index(badGuy))
 
 cassie = Cassie(250, 880)
 badGuys = []
@@ -40,12 +46,6 @@ while not cassie.ded:
         if event.type == pygame.QUIT:
             pygame.quit()
 
-    for projectile in projectiles: # move or remove projectiles
-        if projectile.x < screenWidth and projectile.x > 0:
-            projectile.x += projectile.vel * projectile.direction
-        else:
-            projectiles.pop(projectiles.index(projectile))
-
     keys = pygame.key.get_pressed()
 
     if keys[pygame.K_ESCAPE]:
@@ -53,7 +53,7 @@ while not cassie.ded:
 
     if keys[pygame.K_f]:
         if len(projectiles) < 5:
-            projectiles.append(cassie.weapon.ammo(round(cassie.x + cassie.width //2), round(cassie.y + cassie.height//2), cassie.direction))
+            projectiles.append(cassie.weapon.fire(round(cassie.x + cassie.width //2), round(cassie.y + cassie.height//2), cassie.direction))
 
     if keys[pygame.K_LEFT] and cassie.x > 0:
         cassie.x -= cassie.vel
