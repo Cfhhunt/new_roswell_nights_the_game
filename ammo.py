@@ -8,11 +8,12 @@ class Ammo:
         pass
 
 class TwoHandPlazma(Ammo):
-    def __init__(self, x, y, direction):
+    def __init__(self, x, y, direction, duration):
         self.x = x
         self.y = y
         self.direction = direction
         self.vel = 20
+        self.duration = duration
 
     def draw(self, win):
         pygame.draw.rect(win, (0, 220, 255), pygame.Rect(self.x, self.y, 1920 * self.direction, 10))
@@ -21,3 +22,4 @@ class TwoHandPlazma(Ammo):
         self.x = x
         self.y = y
         self.direction = direction
+        self.duration -= 1

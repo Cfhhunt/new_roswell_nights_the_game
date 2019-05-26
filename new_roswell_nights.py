@@ -26,7 +26,10 @@ def drawProjectiles():
             projectile.x += projectile.vel * projectile.direction
         else:
             projectiles.pop(projectiles.index(projectile))
-        projectile.updatePos(cassie.x, cassie.y, cassie.direction)
+        if projectile.duration <= 0: # if duration is 0, delete
+            projectiles.pop(projectiles.index(projectile))
+        else: # else, update it
+            projectile.updatePos(cassie.x, cassie.y, cassie.direction)
         projectile.draw(win)
 
 def drawBadGuys():

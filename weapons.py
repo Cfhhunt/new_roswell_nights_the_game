@@ -13,4 +13,5 @@ class PlazmaGun(Weapon):
         self.duration = 60 # Duration in frames
 
     def fire(self, x, y, direction):
-        return self.ammo(x, y, direction)
+        return self.ammo(x, y, direction, self.duration)
+        self.ammo -= duration
