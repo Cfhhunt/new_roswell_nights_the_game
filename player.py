@@ -50,7 +50,11 @@ class Cassie(Player):
         self.hp = 100
         self.maxHp = 100
         self.hitBox = (self.x + 50, self.y, 100, 100)
-        self.weapon = weapons.PlazmaGun()
+        self.weapon = {
+                'oneHand': 'none',
+                'twoHand': weapons.PlazmaGun(),
+                'melee': 'none'
+            }
 
         # Sprites
         self.walkRight = [pygame.image.load('images\\cassie\\R1.png'), pygame.image.load('images\\cassie\\R2.png'), pygame.image.load('images\\cassie\\R3.png'), pygame.image.load('images\\cassie\\R4.png'), pygame.image.load('images\\cassie\\R5.png'), pygame.image.load('images\\cassie\\R6.png'), pygame.image.load('images\\cassie\\R7.png'), pygame.image.load('images\\cassie\\R8.png')]

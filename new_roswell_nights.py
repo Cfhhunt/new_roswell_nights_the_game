@@ -15,21 +15,26 @@ clock = pygame.time.Clock()
 
 def redrawGameWindow():
     win.blit(bg, (0, 0)) #this will eventually be passed to world.draw()
+    cassie.weapon['twoHand'].update() #updating the weapon and updating projectile must happen separately
     cassie.draw(win)
     drawProjectiles()
     drawBadGuys()
     pygame.display.update()
 
 def drawProjectiles():
-    for projectile in projectiles: # move or remove projectiles
-        if projectile.x < screenWidth and projectile.x > 0:
-            projectile.x += projectile.vel * projectile.direction
-        else:
-            projectiles.pop(projectiles.index(projectile))
-        if projectile.duration <= 0: # if duration is 0, delete
-            projectiles.pop(projectiles.index(projectile))
-        else: # else, update it
-            projectile.updatePos(cassie.x, cassie.y, cassie.direction)
+    for projectile in projectiles: # update, delete, draw projectiles
+        # projectile.update(x, y, direction)
+        # if projectile.isDone(): Delete
+        if projectile.style == 'slug':
+            if projectile.x < screenWidth and projectile.x > 0:
+                projectile.x += projectile.vel * projectile.direction
+            else:
+                projectiles.pop(projectiles.index(projectile))
+        elif projectile.style == 'timed':
+            if projectile.duration <= 0: # if duration is 0, delete
+                projectiles.pop(projectiles.index(projectile))
+            else: # else, update it
+                projectile.update(cassie.x, cassie.y, cassie.direction)
         projectile.draw(win)
 
 def drawBadGuys():
@@ -54,9 +59,9 @@ while not cassie.ded:
     if keys[pygame.K_ESCAPE]:
         pygame.quit()
 
-    if keys[pygame.K_f]:
-        if len(projectiles) < 5:
-            projectiles.append(cassie.weapon.fire(round(cassie.x + cassie.width //2), round(cassie.y + cassie.height//2), cassie.direction))
+    if keys[pygame.K_d]:
+        if cassie.weapon['twoHand'].fired is not True:
+            projectiles.append(cassie.weapon['twoHand'].fire(round(cassie.x + cassie.width //2), round(cassie.y + cassie.height//2), cassie.direction))
 
     if keys[pygame.K_LEFT] and cassie.x > 0:
         cassie.x -= cassie.vel
