@@ -1,30 +1,46 @@
 import pygame
-import ammo
+import munitions
 
 class Weapon:
     def __init__(self):
         raise NotImplementedError('Do not create raw Weapon!')
 
-class PlazmaGun(Weapon):
+class ColtSAA(Weapon):
     def __init__(self):
-        self.ammo = ammo.TwoHandPlazma
-        self.maxAmmo = 1000
-        self.ammoLeft = 1000
-        self.duration = 60 # Duration in frames
-        self.maxCoolDown = 180 # Time between firing, need a general 'fire style' info
-        self.coolDown = self.maxCoolDown
-        self.Down = 30
-        self.fired = False
-        self.weaponType = 'twoHand'
+        self.name = 'Colt Single Action Army'
+        self.type = 'oneHand'
+        self.maxAmmo = 12
+        self.ammo = self.maxAmmo
+        self.munition = munitions.ACP45
+        self.coolDown = 0
+        self.coolDuration = 7
 
     def fire(self, x, y, direction):
-        return self.ammo(x, y, direction, self.duration)
-        self.ammoLeft -= duration
-        self.fired = True
+        self.coolDown = self.coolDuration
+        self.ammo -= 1
+        return self.munition(x, y, direction)
 
     def update(self):
-        if self.fired == True:
+        if self.coolDown > 0:
             self.coolDown -= 1
-        if self.coolDown <= 0:
-            self.fired = False
-            self.coolDown = self.maxCoolDown
+
+    def canFire(self):
+        return self.coolDown == 0 and self.ammo > 0
+
+class TireIron(Weapon):
+    def __init__(self):
+        self.name = 'Tire Iron'
+        self.type = 'melee'
+        self.munition = munitions.MeleeStrike
+        self.coolDown = 0
+        self.coolDuration = 7
+
+    def fire(self, x, y, direction):
+        return self.munition(x, y, direction)
+
+    def update(self):
+        if self.coolDown > 0:
+            self.coolDown -= 1
+
+    def canFire(self):
+        return self.coolDown == 0

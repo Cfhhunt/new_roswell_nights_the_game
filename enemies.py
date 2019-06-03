@@ -47,3 +47,6 @@ class Enemy(object):
             else:
                 self.vel = self.vel * -1
                 self.walkCount = 0
+
+    def update(self):
+        pass
