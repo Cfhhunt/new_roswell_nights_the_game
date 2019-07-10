@@ -23,11 +23,12 @@ class ACP45(Munitions):
     def draw(self, win):
         pygame.draw.circle(win, (255, 0, 0), (self.x, self.y), 10)
 
-    def hitCheck(self, hitBox):
+    def hitCheck(self, badGuy, hitBox):
         enemyX, enemyY, maxX, maxY = hitBox
         if self.x > enemyX and self.x < enemyX + maxX:
             if self.y > enemyY and self.y < enemyY + maxY:
                 self.done = True
+                badGuy.hp = badGuy.hp - self.dmg
                 return True
         return False
 

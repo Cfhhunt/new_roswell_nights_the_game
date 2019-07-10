@@ -6,11 +6,8 @@ import pygame
 import enemies
 pygame.init()
 
-# TODO: SKELETON CODE
-# TODO: clean out all code thats not about movement/drawing
-# TODO: Update movement code in while loop
-# TODO: rework action code with a switch statement
-# TODO: allow both cassie and enemies to take damage
+# TODO: Rework the code, draw(),h hitCeck() and update() should really happen in the same loop
+# TODO: Figure out what you want from this game
 
 # Display and world info
 screenWidth = 1920
@@ -27,46 +24,35 @@ myfont = pygame.font.SysFont('Comic Sans MS', 30)
 
 
 
-def redrawGameWindow():
+def redrawGameWindow(): # Order should be world, cassie, badGuys, projectiles
     #win.blit(bg, (0, 0)) #this will eventually be passed to world.draw()
-    world.update(win, cassie)
-    world.draw(win)
-    cassie.update() # Run the update loop
-    updateProjectiles()
-    hitCheck()
-    updateBadGuys()
-    cassie.draw(win) # draw based on state
-    drawProjectiles()
+    world.draw(win, cassie)
+    drawPlayer()
     drawBadGuys()
+    drawProjectiles()
     win.blit(textsurface,(0,0))
     pygame.display.update()
 
-def updateProjectiles():
-    for projectile in projectiles:
-        #if done, delete
-        projectile.update()
-
-def drawProjectiles():
-    for projectile in projectiles:
-        projectile.draw(win)
-
-def updateBadGuys(): #pass info about world to badguys
-    for badGuy in badGuys:
-        badGuy.update()
-        if badGuy.ded:
-            badGuys.pop(badGuys.index(badGuy))
+def drawPlayer():
+    cassie.update()
+    cassie.draw(win)
 
 def drawBadGuys():
     for badGuy in badGuys:
+        badGuy.update()
         badGuy.draw(win)
+        if badGuy.ded:
+            badGuys.pop(badGuys.index(badGuy))
 
-def hitCheck(): #check for hit, do damage, delete projectile
+def drawProjectiles():
     for projectile in projectiles:
+        projectile.update()
+        projectile.draw(win)
         for badGuy in badGuys:
-            if projectile.hitCheck(badGuy.hitBox) == True:
-                badGuy.hp = badGuy.hp - projectile.dmg
+            projectile.hitCheck(badGuy, badGuy.hitBox)
             if projectile.done:
                 projectiles.pop(projectiles.index(projectile))
+
 
 cassie = Cassie(250, 840)
 badGuys = []

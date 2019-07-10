@@ -14,5 +14,6 @@ class World:
         elif cassie.x < 10 and self.x < 5:
             self.x += 5
 
-    def draw(self, win):
+    def draw(self, win, player):
+        self.update(win, player)
         win.blit(self.bg, (self.x, self.y))
