@@ -63,19 +63,18 @@ def drawBadGuys():
 def hitCheck(): #check for hit, do damage, delete projectile
     for projectile in projectiles:
         for badGuy in badGuys:
-            pass
-            #projectile.hitCheck(badGuy.hitBox)
-            #check for hit
-            #if hit requires delete
+            if projectile.hitCheck(badGuy.hitBox) == True:
+                badGuy.hp = badGuy.hp - projectile.dmg
+            if projectile.done:
+                projectiles.pop(projectiles.index(projectile))
 
 cassie = Cassie(250, 840)
 badGuys = []
 badGuys.append(enemies.Enemy(1100, 880, 250, 200, 1920))
 projectiles = []
 while not cassie.ded:
-    clock.tick(50)
+    clock.tick(48)
     textsurface = myfont.render(str(clock.get_fps()) + '\nHealth: ' + str(cassie.hp) , False, (0, 0, 0))
-
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
