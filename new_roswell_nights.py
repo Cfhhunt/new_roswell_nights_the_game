@@ -6,26 +6,22 @@ import pygame
 import enemies
 pygame.init()
 
-# TODO: Rework the code, draw(),h hitCeck() and update() should really happen in the same loop
 # TODO: Figure out what you want from this game
 
 # Display and world info
 screenWidth = 1920
 screenHeight = 1080
+paused = False
 win = pygame.display.set_mode((screenWidth, screenHeight), pygame.FULLSCREEN)
 pygame.display.set_caption('New Roswell Nights')
 bg = pygame.image.load('images\\background.png')
 clock = pygame.time.Clock()
 world = World(win, screenWidth, screenHeight)
 
-pygame.font.init() # you have to call this at the start,
-                   # if you want to use this module.
+pygame.font.init() # you have to call this at the start, if you want to use this module.
 myfont = pygame.font.SysFont('Comic Sans MS', 30)
 
-
-
 def redrawGameWindow(): # Order should be world, cassie, badGuys, projectiles
-    #win.blit(bg, (0, 0)) #this will eventually be passed to world.draw()
     world.draw(win, cassie)
     drawPlayer()
     drawBadGuys()
@@ -37,14 +33,14 @@ def drawPlayer():
     cassie.update()
     cassie.draw(win)
 
-def drawBadGuys():
+def drawBadGuys(): # update, draw, pop
     for badGuy in badGuys:
         badGuy.update()
         badGuy.draw(win)
         if badGuy.ded:
             badGuys.pop(badGuys.index(badGuy))
 
-def drawProjectiles():
+def drawProjectiles(): # update, draw, hitCheck, pop
     for projectile in projectiles:
         projectile.update()
         projectile.draw(win)
@@ -58,6 +54,7 @@ cassie = Cassie(250, 840)
 badGuys = []
 badGuys.append(enemies.Enemy(1100, 880, 250, 200, 1920))
 projectiles = []
+
 while not cassie.ded:
     clock.tick(48)
     textsurface = myfont.render(str(clock.get_fps()) + '\nHealth: ' + str(cassie.hp) , False, (0, 0, 0))
@@ -68,8 +65,18 @@ while not cassie.ded:
 
     keys = pygame.key.get_pressed()
 
+    if keys[pygame.K_p]: # Pause button
+        if paused:
+            paused = False
+        else:
+            paused = True
+        pygame.time.wait(500)
+
     if keys[pygame.K_ESCAPE]:
         pygame.quit()
+
+    if paused:
+        continue
 
     # ALL PLAYER MOVEMENT/ACTIONS AND RELATED LOGIC IS DONE HERE
     if cassie.canAttack():
