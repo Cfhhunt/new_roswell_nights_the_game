@@ -7,6 +7,9 @@ import enemies
 pygame.init()
 
 # TODO: Figure out what you want from this game
+# TODO: make background move with player
+# TODO: Write out skeleton code
+# TODO: START COMMENTING YOUR CODE!!!
 
 # Display and world info
 screenWidth = 1920
