@@ -11,7 +11,7 @@ class World:
         self.y = 0
 
     def update(self, win, cassie):
-        if self.x > -(self.imageSize[0]) + 1920:
+        if self.x > -(self.imageSize[0]) + screenWidth:
             if cassie.x > self.screenWidth - 300:
                 self.x -= 5
             elif cassie.x < 10 and self.x < 5:
