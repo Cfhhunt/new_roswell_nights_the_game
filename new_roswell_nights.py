@@ -6,11 +6,7 @@ import pygame
 import enemies
 pygame.init()
 
-# TODO: Figure out what you want from this game
-# TODO: make background move with player
-# TODO: Write out skeleton code
-# TODO: START COMMENTING YOUR CODE!!!
-
+# Initialization. Global variables and setting up pygame
 # Display and world info
 screenWidth = 1920
 screenHeight = 1080
@@ -20,101 +16,82 @@ pygame.display.set_caption('New Roswell Nights')
 bg = pygame.image.load('images\\background.png')
 clock = pygame.time.Clock()
 world = World(win, screenWidth, screenHeight)
-
 pygame.font.init() # you have to call this at the start, if you want to use this module.
 myfont = pygame.font.SysFont('Comic Sans MS', 30)
 
-def redrawGameWindow(): # Order should be world, cassie, badGuys, projectiles
-    world.draw(win, cassie)
-    drawPlayer()
-    drawBadGuys()
-    drawProjectiles()
-    win.blit(textsurface,(0,0))
-    pygame.display.update()
-
-def drawPlayer():
-    cassie.update()
-    cassie.draw(win)
-
-def drawBadGuys(): # update, draw, pop
-    for badGuy in badGuys:
-        badGuy.update()
-        badGuy.draw(win)
-        if badGuy.ded:
-            badGuys.pop(badGuys.index(badGuy))
-
-def drawProjectiles(): # update, draw, hitCheck, pop
-    for projectile in projectiles:
-        projectile.update()
-        projectile.draw(win)
-        for badGuy in badGuys:
-            projectile.hitCheck(badGuy, badGuy.hitBox)
-            if projectile.done:
-                projectiles.pop(projectiles.index(projectile))
-
-
+# create player, badGuys, projectile array, etc.
 cassie = Cassie(250, 840)
 badGuys = []
-badGuys.append(enemies.Enemy(1100, 880, 250, 200, 1920))
 projectiles = []
+animations = [] # To add later, death/explosion animations
 
-while not cassie.ded:
-    clock.tick(48)
-    textsurface = myfont.render(str(clock.get_fps()) + '\nHealth: ' + str(cassie.hp) , False, (0, 0, 0))
+# Update function. Update world, player, badGuys, projectiles.
+def update(keys):
+    # update world
+    world.update(cassie)
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
+    # update player
+    cassie.update(keys)
 
-    keys = pygame.key.get_pressed()
+    # update badguys and projectiles
+    for badGuy in badGuys:
+        badGuy.update(cassie)
 
-    if keys[pygame.K_p]: # Pause button
-        if paused:
-            paused = False
-        else:
-            paused = True
+    # update projectiles, check for hits, remove if done
+    for projectile in projectiles:
+        projectile.update()
+        for badGuy in badGuys:
+            projectile.hitCheck(badGuy)
+            if badGuy.ded:
+                badGuys.pop(badGuys.index(badGuy))
+            if projectile.ded:
+                projectiles.pop(projectiles.index(projectile))
+
+# Draw function. This should run every assets individual draw function
+def redraw():
+    world.draw(win)
+    cassie.draw(win)
+    for badGuy in badGuys:
+        badGuy.draw(win)
+    for projectile in projectiles:
+        projectile.draw(win)
+    win.blit(textsurface, (0, 0))
+    pygame.display.update()
+
+
+# Pause function. If user paused, pause
+def pause():
+    if paused:
+        paused = False
+    else:
+        paused = True
         pygame.time.wait(500)
 
-    if keys[pygame.K_ESCAPE]:
+# Victory condition
+def victory():
+    return False
+
+# Game loop. This will first take player input, run all updates, then redraw
+while not cassie.ded: # Run this loop as long as the player lives
+    clock.tick(48)
+    textsurface = myfont.render('_', False, (0, 0, 0))
+
+    # Check for victory condition
+    if victory():
+        print('You win!') # temp
         pygame.quit()
 
+    # Get user input
+    keys = pygame.key.get_pressed()
+
+    # if paused, pause()
+    if keys[pygame.K_p]:
+        pause()
     if paused:
         continue
 
-    # ALL PLAYER MOVEMENT/ACTIONS AND RELATED LOGIC IS DONE HERE
-    if cassie.canAttack():
-        if keys[pygame.K_f]:
-            if cassie.oneHand.canFire():
-                projectiles.append(cassie.oneHand.fire(cassie.handPosX, cassie.handPosY, cassie.direction))
-        if keys[pygame.K_d]:
-            if cassie.melee.canFire():
-                projectiles.append(cassie.melee.fire(cassie.handPosX, cassie.handPosY, cassie.direction))
+    update(keys) # Update all assets
 
-    if keys[pygame.K_LEFT] and cassie.x > 0:
-        cassie.x -= cassie.vel
-        cassie.direction = -1
-        cassie.moving = True
-    elif keys[pygame.K_RIGHT] and cassie.x < screenWidth - cassie.width:
-        cassie.x += cassie.vel
-        cassie.direction = 1
-        cassie.moving = True
-    else:
-        cassie.moving = False
-        cassie.walkcount = 0
-    if not cassie.jumping:
-        if keys[pygame.K_SPACE]:
-            cassie.jumping = True
-            cassie.walkCount = 0
-    else:
-        if cassie.jumpCount >= -10:
-            neg = 1
-            if cassie.jumpCount < 0:
-                neg = -1
-            cassie.y -= (cassie.jumpCount ** 2) //2 * neg
-            cassie.jumpCount -= 1
-        else:
-            cassie.jumping = False
-            cassie.jumpCount = 10
-    redrawGameWindow()
+    redraw() # redraw all assets
 
 pygame.quit()

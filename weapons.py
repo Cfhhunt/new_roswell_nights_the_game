@@ -3,44 +3,21 @@ import munitions
 
 class Weapon:
     def __init__(self):
-        raise NotImplementedError('Do not create raw Weapon!')
+        # Each weapon has a style, oneHand, twoHand, melee
+        # Ammo
+        # Duration. How long the player must wait between shots
+        # clipSize
+        pass
 
-class ColtSAA(Weapon):
-    def __init__(self):
-        self.name = 'Colt Single Action Army'
-        self.type = 'oneHand'
-        self.maxAmmo = 12
-        self.ammo = self.maxAmmo
-        self.munition = munitions.ACP45
-        self.coolDown = 0
-        self.coolDuration = 7
+    def update():
+        # if there are effect or attack durations, update them here, 
+        pass
 
-    def fire(self, x, y, direction):
-        self.coolDown = self.coolDuration
-        self.ammo -= 1
-        return self.munition(x, y, direction)
+    def fire():
+        # Create projectile
+        # Start the clock
+        pass
 
-    def update(self):
-        if self.coolDown > 0:
-            self.coolDown -= 1
-
-    def canFire(self):
-        return self.coolDown == 0 and self.ammo > 0
-
-class TireIron(Weapon):
-    def __init__(self):
-        self.name = 'Tire Iron'
-        self.type = 'melee'
-        self.munition = munitions.MeleeStrike
-        self.coolDown = 0
-        self.coolDuration = 7
-
-    def fire(self, x, y, direction):
-        return self.munition(x, y, direction)
-
-    def update(self):
-        if self.coolDown > 0:
-            self.coolDown -= 1
-
-    def canFire(self):
-        return self.coolDown == 0
+    def reload():
+        # if there's ammo left, allow a reload
+        pass

@@ -10,13 +10,12 @@ class World:
         self.x = 0
         self.y = 0
 
-    def update(self, win, cassie):
+    def update(self, cassie):
         if self.x > -(self.imageSize[0]) + screenWidth:
             if cassie.x > self.screenWidth - 300:
                 self.x -= 5
             elif cassie.x < 10 and self.x < 5:
                 self.x += 5
 
-    def draw(self, win, player):
-        self.update(win, player)
+    def draw(self, win):
         win.blit(self.bg, (self.x, self.y))
